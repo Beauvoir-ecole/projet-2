@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}Accueil{% endblock %}
+{% block description %}Lorem ipsum dolor sit amet, consectetur adipiscing elit. Découvrez notre site.{% endblock %}
+
+{% block content %}
+
+  {# === Hero section with image_1 === #}
+  <section class="hero">
+    <div class="container hero-content">
+      <div>
+        <h1>Lorem ipsum dolor sit amet</h1>
+        <p>
+          Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore
+          et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.
+        </p>
+        <a href="{{ url_for('services') }}" class="btn">Découvrir nos services</a>
+      </div>
+      <div class="hero-image">
+        {# STUDENT: rename your own picture to image_1.jpg (or .webp/.png) and drop it in static/images/ — the helper picks it up automatically #}
+        <img src="{{ find_image('image_1') }}"
+             alt="Description de l'image principale à personnaliser">
+      </div>
+    </div>
+  </section>
+
+  {# === About teaser with image_2 === #}
+  <section class="section section-alt">
+    <div class="container two-col">
+      <div>
+        <h2>À propos de nous</h2>
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod
+          tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+          quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo.
+        </p>
+        <p>
+          Duis aute irure dolor in reprehenderit in voluptate velit esse cillum
+          dolore eu fugiat nulla pariatur.
+        </p>
+        <a href="{{ url_for('about') }}" class="btn btn-secondary">En savoir plus</a>
+      </div>
+      <div>
+        {# STUDENT: rename your own picture to image_2.jpg (or .webp/.png) and drop it in static/images/ — the helper picks it up automatically #}
+        <img src="{{ find_image('image_2') }}"
+             alt="Description de l'image de présentation à personnaliser">
+      </div>
+    </div>
+  </section>
+
+  {# === Services teaser === #}
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title">Nos services</h2>
+      <div class="cards">
+        <article class="card">
+          <h3>Service un</h3>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+        </article>
+        <article class="card">
+          <h3>Service deux</h3>
+          <p>Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+        </article>
+        <article class="card">
+          <h3>Service trois</h3>
+          <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+{% endblock %}

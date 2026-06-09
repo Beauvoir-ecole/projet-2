@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Services{% endblock %}
+{% block description %}Découvrez l'ensemble de nos services. Lorem ipsum dolor sit amet.{% endblock %}
+
+{% block content %}
+
+  <section class="section">
+    <div class="container">
+      <h1>Nos services</h1>
+
+      <div class="two-col">
+        <div>
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod
+            tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+            quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+            consequat.
+          </p>
+        </div>
+        <div>
+          {# STUDENT: rename your own picture to image_3.jpg (or .webp/.png) and drop it in static/images/ #}
+          <img src="{{ find_image('image_3') }}"
+               alt="Description de l'image illustrant nos services">
+        </div>
+      </div>
+
+      <h2 class="section-title">Ce que nous proposons</h2>
+
+      {% if services %}
+        <div class="cards">
+          {% for service in services %}
+            <article class="card">
+              <h3>{{ service.title }}</h3>
+              <p class="card-meta">
+                <small>Catégorie : <strong>{{ service.category.name }}</strong></small>
+              </p>
+              <p>{{ service.description }}</p>
+            </article>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p style="text-align: center; color: var(--text-muted);">
+          Aucun service publié pour le moment. Lance
+          <code>python seed/seed_postgres.py</code> pour ajouter des données de test.
+        </p>
+      {% endif %}
+    </div>
+  </section>
+
+{% endblock %}

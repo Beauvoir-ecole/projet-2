@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}Témoignages{% endblock %}
+{% block description %}Découvrez ce que disent nos clients. Lorem ipsum dolor sit amet.{% endblock %}
+
+{% block content %}
+
+  <section class="section">
+    <div class="container">
+      <h1>Témoignages</h1>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua.
+      </p>
+
+      {# === Flash messages === #}
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <p class="flash flash-{{ category }}" role="alert">{{ message }}</p>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      {# === Approved testimonials === #}
+      {% if testimonials %}
+        <div class="cards">
+          {% for item in testimonials %}
+            <article class="card">
+              <h3>{{ item.author }}</h3>
+              <p aria-label="Note : {{ item.rating }} sur 5">
+                {% for _ in range(item.rating) %}★{% endfor %}{% for _ in range(5 - item.rating) %}☆{% endfor %}
+              </p>
+              <p>« {{ item.comment }} »</p>
+            </article>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p style="text-align: center; color: var(--text-muted);">
+          Aucun témoignage publié pour le moment.
+        </p>
+      {% endif %}
+
+      {# === Submit form === #}
+      <h2 class="section-title">Laisse ton témoignage</h2>
+      <form method="post" class="testimonial-form">
+        <label>
+          Ton nom
+          <input type="text" name="author" required maxlength="80">
+        </label>
+
+        <label>
+          Note (de 1 à 5)
+          <input type="number" name="rating" required min="1" max="5" value="5">
+        </label>
+
+        <label>
+          Ton message
+          <textarea name="comment" required rows="4" maxlength="1000"></textarea>
+        </label>
+
+        <button type="submit" class="btn">Envoyer</button>
+        <p class="form-note">
+          <small>Ton témoignage sera publié après validation par l'équipe.</small>
+        </p>
+      </form>
+    </div>
+  </section>
+
+{% endblock %}

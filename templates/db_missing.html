@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}{% if kind == 'postgres' %}PostgreSQL{% else %}MongoDB{% endif %} à configurer{% endblock %}
+{% block description %}La base de données n'est pas encore configurée.{% endblock %}
+
+{% block content %}
+
+  <section class="section">
+    <div class="container" style="max-width: 700px; text-align: center;">
+      {% if kind == 'postgres' %}
+        <h1>Oups ! <strong>PostgreSQL</strong> à configurer</h1>
+        <p>
+          Cette page a besoin de <strong>PostgreSQL</strong> (la base relationnelle pour les services et catégories)
+          pour fonctionner, mais la base n'est pas encore connectée ou les tables n'ont pas été créées.
+        </p>
+        <p>Pour la mettre en place :</p>
+        <ol style="text-align: left; display: inline-block;">
+          <li>Crée une base gratuite sur <a href="https://neon.tech">neon.tech</a></li>
+          <li>Copie la chaîne de connexion dans <code>.env</code> sous <code>DATABASE_URL</code></li>
+          <li>Lance <code>python seed/seed_postgres.py</code> pour créer les tables et insérer les données de test</li>
+        </ol>
+      {% elif kind == 'mongo' %}
+        <h1>Oups ! <strong>MongoDB</strong> à configurer</h1>
+        <p>
+          Cette page a besoin de <strong>MongoDB</strong> (la base NoSQL pour les témoignages)
+          pour fonctionner, mais la base n'est pas encore connectée.
+        </p>
+        <p>Pour la mettre en place :</p>
+        <ol style="text-align: left; display: inline-block;">
+          <li>Crée un cluster gratuit sur <a href="https://www.mongodb.com/atlas">MongoDB Atlas</a></li>
+          <li>Copie la chaîne de connexion dans <code>.env</code> sous <code>MONGO_URL</code></li>
+          <li>Lance <code>python seed/seed_mongo.py</code> pour insérer les témoignages de test</li>
+        </ol>
+      {% endif %}
+
+      <p>
+        Le guide complet est dans <a href="https://github.com/">deploiement.md</a>
+        à la racine du projet.
+      </p>
+
+      <p style="margin-top: var(--space-lg);">
+        <a href="{{ url_for('home') }}" class="btn">Retour à l'accueil</a>
+      </p>
+    </div>
+  </section>
+
+{% endblock %}

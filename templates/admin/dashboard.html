@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Tableau de bord admin{% endblock %}
+
+{% block content %}
+
+  <section class="section">
+    <div class="container">
+      <h1>Tableau de bord admin</h1>
+
+      <p>
+        <a href="{{ url_for('admin_logout') }}">Se déconnecter</a>
+      </p>
+
+      <div class="cards">
+        <article class="card">
+          <h3>Services</h3>
+          <p>{% if counts.services is none %}—{% else %}{{ counts.services }}{% endif %}</p>
+          <p><a href="{{ url_for('admin_services') }}" class="btn">Gérer</a></p>
+        </article>
+
+        <article class="card">
+          <h3>Catégories</h3>
+          <p>{% if counts.categories is none %}—{% else %}{{ counts.categories }}{% endif %}</p>
+          <p><a href="{{ url_for('admin_services') }}" class="btn">Voir avec les services</a></p>
+        </article>
+
+        <article class="card">
+          <h3>Témoignages</h3>
+          <p>{% if counts.testimonials is none %}—{% else %}{{ counts.testimonials }}{% endif %}</p>
+          <p><a href="{{ url_for('admin_testimonials') }}" class="btn">Modérer</a></p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+{% endblock %}

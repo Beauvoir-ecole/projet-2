@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  {# Encoding and responsive viewport — required for responsive design #}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  {# SEO meta tags — page title and description are set per page via blocks #}
+  <title>{% block title %}{{ site.name }}{% endblock %} — {{ site.name }}</title>
+  <meta name="description" content="{% block description %}{{ site.description }}{% endblock %}">
+
+  {# Open Graph for social sharing #}
+  <meta property="og:title" content="{% block og_title %}{{ site.name }}{% endblock %}">
+  <meta property="og:description" content="{% block og_description %}{{ site.description }}{% endblock %}">
+  <meta property="og:type" content="website">
+
+  {# Favicon — reuses the logo as favicon #}
+  <link rel="icon" href="{{ find_image('logo') }}">
+
+  {# Google Fonts are imported from variables.css — nothing to change here. #}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  {# Stylesheets — variables.css MUST come first, customizations.css always last #}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/variables.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/customizations.css') }}">
+
+  {% block head_extra %}{% endblock %}
+</head>
+<body>
+
+  {# Skip link for keyboard users — RGAA accessibility #}
+  <a class="skip-link" href="#main">Aller au contenu principal</a>
+
+  {# ============================================
+     HEADER — shared across all pages
+     ============================================ #}
+  <header class="site-header" role="banner">
+    <div class="container header-inner">
+      <a href="{{ url_for('home') }}" class="logo" aria-label="{{ site.name }} — retour à l'accueil">
+        <img src="{{ find_image('logo') }}" alt="{{ site.name }}">
+      </a>
+
+      <button class="nav-toggle"
+              aria-expanded="false"
+              aria-controls="primary-nav"
+              aria-label="Ouvrir le menu de navigation">
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+      </button>
+
+      <nav id="primary-nav" class="primary-nav" aria-label="Navigation principale">
+        <ul>
+          {% for page in site.pages %}
+            <li>
+              <a href="{{ page.url }}"
+                 {% if current_page == page.endpoint %}aria-current="page"{% endif %}>
+                {{ page.label }}
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  {# ============================================
+     MAIN CONTENT — replaced by each child template
+     ============================================ #}
+  <main id="main">
+    {% block content %}{% endblock %}
+  </main>
+
+  {# ============================================
+     FOOTER — shared across all pages
+     ============================================ #}
+  <footer class="site-footer" role="contentinfo">
+    <div class="container footer-inner">
+      <div>
+        <p class="footer-title">{{ site.name }}</p>
+        <p class="footer-tagline">{{ site.tagline }}</p>
+      </div>
+
+      <nav aria-label="Navigation pied de page">
+        <ul>
+          <li><a href="{{ url_for('legal') }}">Mentions légales</a></li>
+          <li><a href="{{ url_for('contact') }}">Contact</a></li>
+        </ul>
+      </nav>
+
+      <p class="footer-copyright">
+        &copy; {{ site.year }} {{ site.name }}. Tous droits réservés.
+      </p>
+    </div>
+  </footer>
+
+  {# Burger menu toggle — small inline script kept minimal #}
+  <script>
+    document.querySelector('.nav-toggle')?.addEventListener('click', function () {
+      const nav = document.getElementById('primary-nav');
+      const expanded = this.getAttribute('aria-expanded') === 'true';
+      this.setAttribute('aria-expanded', String(!expanded));
+      nav?.classList.toggle('is-open');
+    });
+  </script>
+
+  {% if is_debug %}
+    {# ============================================
+       PROGRESS NOTIFIER — dev only.
+       ============================================ #}
+    <button class="progress-trigger"
+            type="button"
+            aria-haspopup="dialog"
+            aria-controls="progress-modal"
+            hidden>
+      <span aria-hidden="true">📝</span>
+      <span class="sr-only">Étape suivante</span>
+      <span class="progress-badge" data-progress-badge>1</span>
+    </button>
+
+    <div id="progress-modal"
+         class="progress-modal"
+         role="dialog"
+         aria-modal="true"
+         aria-labelledby="progress-title"
+         aria-hidden="true">
+      <div class="progress-content">
+        <button class="progress-close" type="button" aria-label="Fermer">&times;</button>
+        <p class="progress-step-count" data-progress-count></p>
+        <h2 id="progress-title" data-progress-title></h2>
+        <p class="progress-file"><strong>Fichier :</strong> <code data-progress-file></code></p>
+        <div class="progress-action" data-progress-action></div>
+        <p class="progress-hint">
+          <small>Une fois que c'est fait, rafraîchis la page : tu passeras automatiquement à l'étape suivante.<br>
+          📖 Besoin de plus de détails sur une étape ? Ouvre le fichier <code>deploiement.md</code> (section « 6. Personnaliser : étape par étape »).</small>
+        </p>
+      </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/progress.js') }}"></script>
+  {% endif %}
+
+  {% if not is_customized %}
+    {# ============================================
+       CUSTOMIZER — floating button + quiz modal.
+       Shown until the student submits the quiz once.
+       ============================================ #}
+    <button class="customizer-trigger"
+            type="button"
+            aria-haspopup="dialog"
+            aria-controls="customizer-modal">
+      <span aria-hidden="true">✨</span>
+      Personnalise-moi
+    </button>
+
+    <div id="customizer-modal"
+         class="customizer-modal"
+         role="dialog"
+         aria-modal="true"
+         aria-labelledby="customizer-title"
+         aria-hidden="true">
+      <div class="customizer-content">
+        <button class="customizer-close" type="button" aria-label="Fermer">&times;</button>
+        <h2 id="customizer-title">Personnalise ton site</h2>
+        <p>Réponds à ces 8 questions, puis le style sera appliqué partout.</p>
+
+        <form>
+          <fieldset>
+            <legend>Position de l'image dans le héros</legend>
+            <label><input type="radio" name="hero" value="left" checked> À gauche</label>
+            <label><input type="radio" name="hero" value="right"> À droite</label>
+          </fieldset>
+
+          <fieldset>
+            <legend>Alignement des paragraphes</legend>
+            <label><input type="radio" name="textAlign" value="left" checked> À gauche</label>
+            <label><input type="radio" name="textAlign" value="justify"> Justifié</label>
+            <label><input type="radio" name="textAlign" value="center"> Centré</label>
+          </fieldset>
+
+          <fieldset>
+            <legend>Alignement des titres</legend>
+            <label><input type="radio" name="titleAlign" value="left" checked> À gauche</label>
+            <label><input type="radio" name="titleAlign" value="center"> Centré</label>
+          </fieldset>
+
+          <fieldset>
+            <legend>Style des coins</legend>
+            <label><input type="radio" name="corners" value="rounded" checked> Arrondis</label>
+            <label><input type="radio" name="corners" value="square"> Carrés</label>
+          </fieldset>
+
+          <fieldset>
+            <legend>Position des liens dans le header</legend>
+            <label><input type="radio" name="navAlign" value="right" checked> À droite</label>
+            <label><input type="radio" name="navAlign" value="center"> Centrés</label>
+            <label><input type="radio" name="navAlign" value="left"> À côté du logo</label>
+          </fieldset>
+
+          <fieldset>
+            <legend>Position du bouton CTA du héros</legend>
+            <label><input type="radio" name="ctaAlign" value="left" checked> À gauche</label>
+            <label><input type="radio" name="ctaAlign" value="center"> Centré</label>
+            <label><input type="radio" name="ctaAlign" value="right"> À droite</label>
+          </fieldset>
+
+          <fieldset>
+            <legend>Style des cartes (sections de services, valeurs…)</legend>
+            <label><input type="radio" name="cards" value="shadow" checked> Avec ombre</label>
+            <label><input type="radio" name="cards" value="flat"> Sans ombre</label>
+            <label><input type="radio" name="cards" value="outlined"> Bordure marquée</label>
+          </fieldset>
+
+          <fieldset>
+            <legend>Alignement du contenu du footer</legend>
+            <label><input type="radio" name="footerAlign" value="left" checked> À gauche</label>
+            <label><input type="radio" name="footerAlign" value="center"> Centré</label>
+          </fieldset>
+
+          <div class="customizer-actions">
+            <button type="submit" class="btn">Appliquer</button>
+            <p class="customizer-status" aria-live="polite"></p>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/customizer.js') }}"></script>
+  {% endif %}
+
+  {% block scripts %}{% endblock %}
+</body>
+</html>

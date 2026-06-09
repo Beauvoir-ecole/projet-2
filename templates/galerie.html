@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Galerie{% endblock %}
+{% block description %}Galerie filtrable. Lorem ipsum dolor sit amet, consectetur adipiscing elit.{% endblock %}
+
+{% block content %}
+
+  <section class="section">
+    <div class="container">
+      <h1>Galerie</h1>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua.
+      </p>
+
+      {# === Filter buttons === #}
+      <div class="filters" role="group" aria-label="Filtres de la galerie">
+        <button class="filter-btn is-active" data-category="all" type="button">Tout</button>
+        <button class="filter-btn" data-category="a" type="button">Catégorie A</button>
+        <button class="filter-btn" data-category="b" type="button">Catégorie B</button>
+        <button class="filter-btn" data-category="c" type="button">Catégorie C</button>
+      </div>
+
+      {# === Gallery grid === #}
+      {# STUDENT: rename your gallery pictures to img-1.jpg, img-2.jpg... (or .webp/.png) #}
+      {# and drop them in static/images/galerie/ — the helper picks them up automatically. #}
+      <div class="gallery-grid">
+        <figure class="gallery-item" data-category="a">
+          <img src="{{ find_image('img-1', folder='images/galerie') }}"
+               alt="Lorem ipsum dolor sit amet — image 1">
+        </figure>
+        <figure class="gallery-item" data-category="b">
+          <img src="{{ find_image('img-2', folder='images/galerie') }}"
+               alt="Consectetur adipiscing elit — image 2">
+        </figure>
+        <figure class="gallery-item" data-category="c">
+          <img src="{{ find_image('img-3', folder='images/galerie') }}"
+               alt="Sed do eiusmod tempor — image 3">
+        </figure>
+        <figure class="gallery-item" data-category="a">
+          <img src="{{ find_image('img-4', folder='images/galerie') }}"
+               alt="Ut labore et dolore — image 4">
+        </figure>
+        <figure class="gallery-item" data-category="b">
+          <img src="{{ find_image('img-5', folder='images/galerie') }}"
+               alt="Magna aliqua — image 5">
+        </figure>
+        <figure class="gallery-item" data-category="c">
+          <img src="{{ find_image('img-6', folder='images/galerie') }}"
+               alt="Ut enim ad minim — image 6">
+        </figure>
+      </div>
+    </div>
+  </section>
+
+{% endblock %}
+
+{% block scripts %}
+  <script src="{{ url_for('static', filename='js/gallery.js') }}"></script>
+{% endblock %}

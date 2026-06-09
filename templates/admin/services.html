@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Admin — Services{% endblock %}
+
+{% block content %}
+
+  <section class="section">
+    <div class="container">
+      <h1>Services</h1>
+
+      <p>
+        <a href="{{ url_for('admin_dashboard') }}">← Tableau de bord</a>
+        ·
+        <a href="{{ url_for('admin_service_create') }}" class="btn">+ Nouveau service</a>
+      </p>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+          <p class="flash flash-{{ category }}" role="alert">{{ message }}</p>
+        {% endfor %}
+      {% endwith %}
+
+      {% if services %}
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Titre</th>
+              <th>Catégorie</th>
+              <th>Publié</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for service in services %}
+              <tr>
+                <td>{{ service.title }}</td>
+                <td>{{ service.category.name }}</td>
+                <td>{{ "✅" if service.is_published else "❌" }}</td>
+                <td>
+                  <a href="{{ url_for('admin_service_edit', service_id=service.id) }}">Éditer</a>
+                  ·
+                  <form method="post"
+                        action="{{ url_for('admin_service_delete', service_id=service.id) }}"
+                        style="display: inline;"
+                        onsubmit="return confirm('Supprimer ce service ?');">
+                    <button type="submit" class="link-button">Supprimer</button>
+                  </form>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <p>Aucun service. Crée le premier ou lance <code>python seed/seed_postgres.py</code>.</p>
+      {% endif %}
+    </div>
+  </section>
+
+{% endblock %}

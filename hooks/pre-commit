@@ -1,0 +1,4 @@
+#!/bin/sh
+# Block a commit when a likely secret is staged. Enable once per clone with:
+#   git config core.hooksPath hooks
+python3 scripts/check_secrets.py

@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}Admin — Témoignages{% endblock %}
+
+{% block content %}
+
+  <section class="section">
+    <div class="container">
+      <h1>Modération des témoignages</h1>
+
+      <p><a href="{{ url_for('admin_dashboard') }}">← Tableau de bord</a></p>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+          <p class="flash flash-{{ category }}" role="alert">{{ message }}</p>
+        {% endfor %}
+      {% endwith %}
+
+      {% if testimonials %}
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Auteur</th>
+              <th>Note</th>
+              <th>Message</th>
+              <th>Publié</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in testimonials %}
+              <tr>
+                <td>{{ item.author }}</td>
+                <td>{{ item.rating }}/5</td>
+                <td>{{ item.comment }}</td>
+                <td>{{ "✅" if item.is_approved else "❌" }}</td>
+                <td>
+                  <form method="post"
+                        action="{{ url_for('admin_testimonial_toggle', testimonial_id=item.id) }}"
+                        style="display: inline;">
+                    <button type="submit" class="link-button">
+                      {{ "Dépublier" if item.is_approved else "Publier" }}
+                    </button>
+                  </form>
+                  ·
+                  <form method="post"
+                        action="{{ url_for('admin_testimonial_delete', testimonial_id=item.id) }}"
+                        style="display: inline;"
+                        onsubmit="return confirm('Supprimer ce témoignage ?');">
+                    <button type="submit" class="link-button">Supprimer</button>
+                  </form>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <p>Aucun témoignage. Lance <code>python seed/seed_mongo.py</code> pour insérer des données de test.</p>
+      {% endif %}
+    </div>
+  </section>
+
+{% endblock %}

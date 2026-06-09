@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Contact{% endblock %}
+{% block description %}Contactez-nous. Lorem ipsum dolor sit amet, consectetur adipiscing elit.{% endblock %}
+
+{% block content %}
+
+  <section class="section">
+    <div class="container">
+      <h1>Contact</h1>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua.
+      </p>
+
+      <div class="contact-grid">
+
+        {# === Contact information === #}
+        <div class="contact-info">
+          <h2>Nos coordonnées</h2>
+          <p><strong>Email :</strong> <a href="mailto:contact@lorem-ipsum.fr">contact@lorem-ipsum.fr</a></p>
+          <p><strong>Téléphone :</strong> <a href="tel:+33100000000">01 00 00 00 00</a></p>
+          <p><strong>Adresse :</strong><br>
+            10 rue de la République<br>
+            75001 Paris, France
+          </p>
+          <p><strong>Horaires :</strong><br>
+            Du lundi au vendredi<br>
+            9h00 – 18h00
+          </p>
+        </div>
+
+        {# === Contact form (Tally embed) === #}
+        <div>
+          <h2>Nous écrire</h2>
+          {# STUDENT TODO: replace the URL below with your own Tally form URL. #}
+          {# See https://tally.so to create a free form, then paste your embed URL here. #}
+          <iframe class="tally-embed"
+                  src="https://tally.so/embed/REMPLACE_PAR_TON_LIEN_TALLY?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1"
+                  loading="lazy"
+                  title="Formulaire de contact">
+          </iframe>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+{% endblock %}
