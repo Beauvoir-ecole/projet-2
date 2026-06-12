@@ -167,6 +167,34 @@ def _file_contains(relative_path: str, needle: str) -> bool:
         return False
 
 
+def _env_value(name: str) -> str:
+    """Read a variable straight from the ``.env`` file (not ``os.environ``).
+
+    The progress tracker must reflect what the student just typed into
+    ``.env`` after a simple page refresh — without restarting the server
+    (``os.environ`` is only loaded once, at startup). Returns "" if the
+    file or the key is absent.
+    """
+    path = os.path.join(os.path.dirname(__file__), ".env")
+    try:
+        with open(path, encoding="utf-8") as handle:
+            for raw in handle:
+                line = raw.strip()
+                if line.startswith(f"{name}="):
+                    return line.split("=", 1)[1].strip()
+    except FileNotFoundError:
+        return ""
+    return ""
+
+
+def _is_configured(value: str) -> bool:
+    """True when a ``.env`` value is real, i.e. set and not an example value."""
+    if not value:
+        return False
+    placeholders = ("user:password", "@host/", "@cluster.mongodb.net", "change-me")
+    return not any(token in value for token in placeholders)
+
+
 PROGRESS_STEPS = [
     {
         "title": "Créer ton fichier .env",
@@ -222,10 +250,12 @@ PROGRESS_STEPS = [
             "du fichier <code>.env</code> (garde-la telle quelle, le projet adapte "
             "le driver tout seul).\n"
             "3. Lance <code>python seed/seed_postgres.py</code>.\n"
-            "4. (Sécurité, recommandé) Crée un utilisateur applicatif aux droits "
-            "limités sur Neon — voir <code>deploiement.md</code> §6.4."
+            "4. <strong>Relance le serveur pour qu'il voie ta base</strong> : "
+            "dans le terminal, fais <code>Ctrl+C</code> puis <code>python app.py</code>. "
+            "(Sans ça, le site continue d'afficher l'ancienne version : changer "
+            "<code>.env</code> oblige toujours à relancer.)"
         ),
-        "done": lambda: bool(os.environ.get("DATABASE_URL")),
+        "done": lambda: _is_configured(_env_value("DATABASE_URL")),
     },
     {
         "title": "Connecter MongoDB Atlas",
@@ -236,9 +266,11 @@ PROGRESS_STEPS = [
             "2. <strong>Ajoute <code>0.0.0.0/0</code> dans Network Access</strong> "
             "(sinon Render ne pourra pas se connecter).\n"
             "3. Colle la connection string dans <code>MONGO_URL</code> de ton <code>.env</code>.\n"
-            "4. Lance <code>python seed/seed_mongo.py</code>."
+            "4. Lance <code>python seed/seed_mongo.py</code>.\n"
+            "5. <strong>Relance le serveur pour qu'il voie ta base</strong> : "
+            "dans le terminal, fais <code>Ctrl+C</code> puis <code>python app.py</code>."
         ),
-        "done": lambda: bool(os.environ.get("MONGO_URL")),
+        "done": lambda: _is_configured(_env_value("MONGO_URL")),
     },
     {
         "title": "Personnaliser la mise en page (bouton ✨)",
@@ -331,7 +363,7 @@ PROGRESS_STEPS = [
             "cohérents avec ton sujet.\n"
             "3. Relance <code>python seed/seed_mongo.py</code>."
         ),
-        "done": lambda: not _file_contains("seed/seed_mongo.py", "Alice Dupont"),
+        "done": lambda: not _file_contains("seed/seed_mongo.py", "Lorem ipsum dolor sit amet"),
     },
     {
         "title": "Renommer les catégories de la galerie",
@@ -358,13 +390,14 @@ PROGRESS_STEPS = [
         "title": "Adapter le nom du site",
         "file": "app.py",
         "action": (
-            "Dans <code>app.py</code>, classe <code>Site</code> :\n"
-            "1. <strong>Ligne 61</strong> : remplace <code>\"Lorem Ipsum\"</code> "
+            "Dans <code>app.py</code>, classe <code>Site</code> "
+            "(vers la <strong>ligne 96</strong>) :\n"
+            "1. <code>self.name</code> : remplace <code>\"Lorem Ipsum\"</code> "
             "par le vrai nom de ton site.\n"
-            "2. <strong>Ligne 62</strong> : remplace le texte de <code>self.tagline</code> "
+            "2. <code>self.tagline</code> : remplace le texte "
             "par ton slogan.\n"
-            "3. <strong>Lignes 63 à 66</strong> : remplace les 2 phrases de "
-            "<code>self.description</code> par une description de ton site."
+            "3. <code>self.description</code> : remplace les 2 phrases "
+            "par une description de ton site."
         ),
         "done": lambda: SITE.name != "Lorem Ipsum",
     },
