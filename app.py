@@ -570,7 +570,12 @@ def admin_login():
         expected_pass = os.environ.get("ADMIN_PASSWORD", "")
         if username == expected_user and password and password == expected_pass:
             session["is_admin"] = True
-            return redirect(request.args.get("next") or url_for("admin_dashboard"))
+            # Ne suivre `next` que s'il pointe vers un chemin interne
+            # (evite un open redirect vers un site externe).
+            next_url = request.args.get("next", "")
+            if not next_url.startswith("/") or next_url.startswith("//"):
+                next_url = url_for("admin_dashboard")
+            return redirect(next_url)
         flash("Identifiants invalides.", "error")
     return render_template("admin/login.html")
 

@@ -6,6 +6,7 @@ Covers:
     not tested here — that would require a live cluster).
 """
 import pytest
+from sqlalchemy.exc import IntegrityError
 
 from models import (
     Category,
@@ -30,7 +31,7 @@ def test_category_create_and_get(app):
     assert repo.get(category.id).name == "Catégorie X"
 
 
-def test_service_requires_existing_category(app, category):
+def test_service_accepts_existing_category(app, category):
     repo = ServiceRepository()
     service = repo.create(
         title="Service un",
@@ -39,6 +40,15 @@ def test_service_requires_existing_category(app, category):
     )
     assert service.id is not None
     assert service.category_id == category.id
+
+
+def test_service_rejects_unknown_category(app):
+    """Un service référençant une catégorie inexistante doit être refusé
+    par la contrainte de clé étrangère (nécessite PRAGMA foreign_keys=ON)."""
+    repo = ServiceRepository()
+    with pytest.raises(IntegrityError):
+        repo.create(title="Orphelin", description="x", category_id=999999)
+    db.session.rollback()
 
 
 def test_service_rejects_empty_title(app, category):
